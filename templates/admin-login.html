@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Login - CSE Study Vault</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+
+    <div class="particles"></div>
+
+    <div class="admin-login-card">
+        <img src="{{ url_for('static', filename='logo.jpeg') }}" alt="Logo" class="logo">
+        <h2>Admin Login</h2>
+        <p class="tagline">Restricted access for content management</p>
+
+        <form id="adminLoginForm">
+            <input type="email" id="adminEmail" placeholder="Admin Email" required>
+            <input type="password" id="adminPassword" placeholder="Password" required>
+
+            <p id="errorMsg" class="error-msg"></p>
+
+            <button type="submit" class="btn">Login</button>
+        </form>
+
+        <a href="/" class="back-link">← Back to Home</a>
+    </div>
+
+    <script>
+        const adminLoginForm = document.getElementById("adminLoginForm");
+
+        adminLoginForm.addEventListener("submit", function(e) {
+            e.preventDefault();
+
+            const email = document.getElementById("adminEmail").value.trim();
+            const password = document.getElementById("adminPassword").value.trim();
+            const errorMsg = document.getElementById("errorMsg");
+
+            const fixedAdminEmail = "aakash.cse24@cmrit.ac.in";
+            const fixedAdminPassword = "@@k@sh18";
+
+            if (email === fixedAdminEmail && password === fixedAdminPassword) {
+                window.location.href = "/admin-panel";
+            } else {
+                errorMsg.textContent = "Invalid admin email or password.";
+            }
+        });
+    </script>
+
+</body>
+</html>

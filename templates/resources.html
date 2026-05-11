@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Resources</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+
+<div class="particles"></div>
+
+<div class="dashboard-card">
+
+    <h2>{{ subject }} Resources</h2>
+
+    <p class="tagline">
+        {{ semester }}
+    </p>
+
+    <div class="semester-grid">
+
+        <a href="/materials/{{ semester }}/{{ subject }}/Notes" class="resource-card">
+            📘 Notes
+        </a>
+
+        <a href="/materials/{{ semester }}/{{ subject }}/PYQs" class="resource-card">
+            📝 Model Papers
+        </a>
+
+        <a href="/materials/{{ semester }}/{{ subject }}/Lab Programs" class="resource-card">
+            💻 Lab Programs
+        </a>
+
+        <a href="/materials/{{ semester }}/{{ subject }}/Important Questions" class="resource-card">
+            ⭐ Important Questions
+        </a>
+
+    </div>
+
+    <a href="/dashboard" class="back-link">← Back</a>
+
+</div>
+
+</body>
+</html>

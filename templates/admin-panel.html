@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Panel - CSE Study Vault</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+
+    <div class="particles"></div>
+
+    <div class="admin-panel-card">
+        <img src="{{ url_for('static', filename='logo.jpeg') }}" alt="Logo" class="logo">
+        <h2>Admin Panel</h2>
+        <p class="tagline">Manage study materials efficiently</p>
+
+        <div class="admin-options">
+            <a href="/upload" class="admin-option-card">Upload New Material</a>
+            <a href="#" class="admin-option-card">Update Existing Material</a>
+            <a href="#" class="admin-option-card">Delete Material</a>
+            <a href="#" class="admin-option-card">Manage Subjects</a>
+            <a href="#" class="admin-option-card">Manage Semesters</a>
+            <a href="#" class="admin-option-card">View Uploaded Resources</a>
+        </div>
+
+        <a href="/" class="back-link">← Logout</a>
+    </div>
+
+</body>
+</html>

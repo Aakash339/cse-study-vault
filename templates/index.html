@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CSE Study Vault</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+
+<!-- Animated Background -->
+<div class="particles"></div>
+
+<!-- Main Glass Card -->
+<div class="card">
+
+    <!-- Logo -->
+    <img src="{{ url_for('static', filename='logo.jpeg') }}" alt="CSE Study Vault Logo" class="logo">
+    <!-- Title -->
+    <h1>
+        <span class="orange">CSE</span> StudyVault
+    </h1>
+
+    <!-- Tagline -->
+    <p class="tagline">
+        One Place for All Study Needs
+    </p>
+
+    <!-- Description -->
+    <p class="desc">
+        Everything you need to study, in one place.
+    </p>
+
+    <!-- Enter Portal -->
+    <a href="/dashboard" class="btn">
+        Enter Study Vault
+    </a>
+
+</div>
+
+
+<!-- Hidden Admin Access -->
+<a href="/admin-login" class="admin-btn">
+⚙
+</a>
+
+</body>
+</html>

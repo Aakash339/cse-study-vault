@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Upload Material</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+
+<div class="particles"></div>
+
+<div class="admin-login-card">
+
+    <h2>Upload Material</h2>
+    <p class="tagline">Upload study resources</p>
+
+    <form action="/upload" method="POST" enctype="multipart/form-data">
+
+        <input type="text" name="title" placeholder="Material Title" required>
+
+        <!-- Semester Dropdown -->
+        <select name="semester" id="semester" required onchange="updateSubjects()">
+
+            <option value="">Select Semester</option>
+
+            <option value="Semester 3">Semester 3</option>
+            <option value="Semester 4">Semester 4</option>
+            <option value="Semester 5">Semester 5</option>
+            <option value="Semester 6">Semester 6</option>
+            <option value="Semester 7">Semester 7</option>
+            <option value="Semester 8">Semester 8</option>
+
+        </select>
+
+        <!-- Subject Dropdown -->
+        <select name="subject" id="subject" required>
+
+            <option value="">Select Subject</option>
+
+        </select>
+
+        <!-- Resource Type -->
+        <select name="resource_type" required>
+
+            <option value="">Select Resource Type</option>
+
+            <option>Notes</option>
+            <option>PYQs</option>
+            <option>Lab Programs</option>
+            <option>Important Questions</option>
+
+        </select>
+
+        <!-- File Upload -->
+        <input type="file" name="file" required>
+
+        <button type="submit" class="btn">Upload</button>
+
+    </form>
+
+    <a href="/admin-panel" class="back-link">← Back</a>
+
+</div>
+
+
+<script>
+
+function updateSubjects() {
+
+    const semester = document.getElementById("semester").value;
+
+    const subjectDropdown = document.getElementById("subject");
+
+    subjectDropdown.innerHTML = '<option value="">Select Subject</option>';
+
+    let subjects = [];
+
+    if (semester === "Semester 3") {
+
+        subjects = [
+            "BCS301",
+            "BCS302",
+            "BCS303",
+            "BCS304",
+            "BSCK307",
+            "BCS306A"
+        ];
+
+    }
+
+    else if (semester === "Semester 4") {
+
+        subjects = [
+            "BCS401",
+            "BCS402",
+            "BCS403",
+            "BCS405B",
+            "BCS456C",
+            "BBOK407",
+            "BUHK408"
+        ];
+
+    }
+
+    else if (semester === "Semester 5") {
+
+        subjects = [
+            "BCS501",
+            "BCS502",
+            "BCS503",
+            "BCS504",
+            "BCS505",
+            "BCS506"
+        ];
+
+    }
+
+    else if (semester === "Semester 6") {
+
+        subjects = [
+            "BCS601",
+            "BCS602",
+            "BCS603",
+            "BCS604",
+            "BCS605",
+            "BCS606"
+        ];
+
+    }
+
+    else if (semester === "Semester 7") {
+
+        subjects = [
+            "BCS701",
+            "BCS702",
+            "BCS703",
+            "BCS704",
+            "BCS705",
+            "BCS706"
+        ];
+
+    }
+
+    else if (semester === "Semester 8") {
+
+        subjects = [
+            "BCS801",
+            "BCS802",
+            "BCS803",
+            "BCS804",
+            "BCS805",
+            "BCS806"
+        ];
+
+    }
+
+    subjects.forEach(function(subject) {
+
+        let option = document.createElement("option");
+
+        option.value = subject;
+
+        option.textContent = subject;
+
+        subjectDropdown.appendChild(option);
+
+    });
+
+}
+
+</script>
+
+</body>
+</html>

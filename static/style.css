@@ -1,0 +1,556 @@
+/* RESET */
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+}
+
+
+/* BODY */
+body{
+font-family:'Segoe UI',sans-serif;
+height:100vh;
+overflow:hidden;
+
+display:flex;
+justify-content:center;
+align-items:center;
+
+background:linear-gradient(
+135deg,
+#0f172a,
+#1e3a8a
+);
+}
+
+
+/* PARTICLES BACKGROUND */
+.particles{
+position:absolute;
+top:0;
+left:0;
+width:100%;
+height:100%;
+overflow:hidden;
+z-index:0;
+}
+
+.particles::before,
+.particles::after{
+content:"";
+position:absolute;
+
+width:200%;
+height:200%;
+
+background-image:
+radial-gradient(
+white 1px,
+transparent 1px
+);
+
+background-size:50px 50px;
+
+opacity:.15;
+
+animation:moveParticles 20s linear infinite;
+}
+
+@keyframes moveParticles{
+from{
+transform:translateY(0);
+}
+to{
+transform:translateY(-200px);
+}
+}
+
+
+
+/* MAIN GLASS CARD */
+.card{
+position:relative;
+z-index:1;
+
+background:rgba(255,255,255,.10);
+
+backdrop-filter:blur(20px);
+-webkit-backdrop-filter:blur(20px);
+
+border:1px solid rgba(255,255,255,.2);
+
+padding:55px;
+
+border-radius:25px;
+
+text-align:center;
+
+box-shadow:
+0 8px 32px rgba(0,0,0,.6);
+
+animation:fadeUp 1.4s ease;
+}
+
+
+/* Glow behind card */
+.card::before{
+content:"";
+position:absolute;
+
+width:300px;
+height:300px;
+
+top:-100px;
+left:-100px;
+
+background:
+radial-gradient(
+circle,
+rgba(59,130,246,.35),
+transparent
+);
+
+z-index:-1;
+}
+
+
+/* LOGO */
+.logo{
+width:180px;
+margin-bottom:15px;
+
+animation:float 3s ease-in-out infinite;
+}
+
+
+/* TITLE */
+h1{
+font-size:42px;
+color:white;
+margin:10px 0;
+}
+
+.orange{
+color:#f97316;
+}
+
+
+/* TAGLINE */
+.tagline{
+color:#cbd5f5;
+font-size:18px;
+margin-bottom:15px;
+}
+
+
+/* DESCRIPTION */
+.desc{
+color:#e2e8f0;
+font-size:15px;
+line-height:1.6;
+margin-bottom:35px;
+opacity:.85;
+}
+
+
+/* BUTTON */
+.btn{
+display:inline-block;
+margin-top:10px;
+
+text-decoration:none;
+padding:14px 34px;
+
+border-radius:35px;
+
+background:
+linear-gradient(
+45deg,
+#2563eb,
+#f97316
+);
+
+color:white;
+font-size:16px;
+
+transition:.35s;
+}
+
+.btn:hover{
+transform:scale(1.08);
+box-shadow:
+0 0 20px #f97316;
+}
+
+
+
+/* HIDDEN ADMIN BUTTON */
+.admin-btn{
+position:fixed;
+
+bottom:20px;
+right:20px;
+
+width:45px;
+height:45px;
+
+border-radius:50%;
+
+background:rgba(255,255,255,.08);
+
+backdrop-filter:blur(8px);
+
+display:flex;
+justify-content:center;
+align-items:center;
+
+font-size:22px;
+text-decoration:none;
+
+color:#cbd5f5;
+
+box-shadow:
+0 0 10px rgba(0,0,0,.4);
+
+opacity:.35;
+
+transition:.3s;
+}
+
+.admin-btn:hover{
+opacity:1;
+transform:scale(1.1) rotate(30deg);
+color:#f97316;
+}
+
+
+
+/* ANIMATIONS */
+@keyframes fadeUp{
+from{
+opacity:0;
+transform:translateY(40px);
+}
+to{
+opacity:1;
+transform:translateY(0);
+}
+}
+
+@keyframes float{
+0%{
+transform:translateY(0);
+}
+
+50%{
+transform:translateY(-10px);
+}
+
+100%{
+transform:translateY(0);
+}
+}
+
+/* ADMIN LOGIN CARD */
+.admin-login-card{
+position:relative;
+z-index:1;
+width:400px;
+background:rgba(255,255,255,.10);
+backdrop-filter:blur(20px);
+-webkit-backdrop-filter:blur(20px);
+border:1px solid rgba(255,255,255,.2);
+padding:45px;
+border-radius:25px;
+text-align:center;
+box-shadow:0 8px 32px rgba(0,0,0,.6);
+animation:fadeUp 1.3s ease;
+}
+
+.admin-login-card h2{
+color:white;
+font-size:34px;
+margin:15px 0 8px;
+}
+
+.admin-login-card input{
+width:100%;
+padding:14px 16px;
+margin-bottom:18px;
+border:none;
+outline:none;
+border-radius:12px;
+background:rgba(255,255,255,.12);
+color:white;
+font-size:15px;
+}
+
+.admin-login-card input::placeholder{
+color:#dbeafe;
+}
+
+.error-msg{
+color:#fca5a5;
+font-size:14px;
+margin-bottom:15px;
+min-height:18px;
+}
+
+.back-link{
+display:inline-block;
+margin-top:20px;
+color:#cbd5f5;
+text-decoration:none;
+font-size:15px;
+}
+
+.back-link:hover{
+color:#f97316;
+}
+
+
+/* ADMIN PANEL */
+.admin-panel-card{
+position:relative;
+z-index:1;
+width:700px;
+background:rgba(255,255,255,.10);
+backdrop-filter:blur(20px);
+-webkit-backdrop-filter:blur(20px);
+border:1px solid rgba(255,255,255,.2);
+padding:45px;
+border-radius:25px;
+text-align:center;
+box-shadow:0 8px 32px rgba(0,0,0,.6);
+animation:fadeUp 1.3s ease;
+}
+
+.admin-panel-card h2{
+color:white;
+font-size:34px;
+margin:15px 0 8px;
+}
+
+.admin-options{
+margin-top:30px;
+display:grid;
+grid-template-columns:repeat(2, 1fr);
+gap:20px;
+}
+
+.admin-option-card{
+text-decoration:none;
+padding:22px;
+border-radius:18px;
+background:rgba(255,255,255,.10);
+border:1px solid rgba(255,255,255,.15);
+color:white;
+font-size:16px;
+transition:.3s;
+}
+
+.admin-option-card:hover{
+transform:translateY(-5px) scale(1.02);
+box-shadow:0 0 18px rgba(249,115,22,.45);
+color:#f97316;
+}
+
+
+/* DASHBOARD CARD */
+.dashboard-card{
+position:relative;
+z-index:1;
+
+width:700px;
+
+background:rgba(255,255,255,.10);
+backdrop-filter:blur(20px);
+-webkit-backdrop-filter:blur(20px);
+
+border:1px solid rgba(255,255,255,.2);
+
+padding:40px;
+border-radius:25px;
+
+text-align:center;
+
+box-shadow:0 8px 32px rgba(0,0,0,.6);
+
+animation:fadeUp 1.3s ease;
+}
+
+.dashboard-card h2{
+color:white;
+margin-bottom:10px;
+}
+
+/* GRID */
+.semester-grid{
+margin-top:30px;
+
+display:grid;
+grid-template-columns:repeat(3,1fr);
+gap:20px;
+}
+
+/* CARD */
+.semester-card{
+text-decoration:none;
+
+padding:20px;
+
+border-radius:18px;
+
+background:rgba(255,255,255,.10);
+border:1px solid rgba(255,255,255,.15);
+
+color:white;
+font-size:16px;
+
+transition:.3s;
+}
+
+/* HOVER */
+.semester-card:hover{
+transform:translateY(-5px);
+box-shadow:0 0 15px rgba(249,115,22,.4);
+color:#f97316;
+}
+
+
+/* RESOURCE CARDS */
+.resource-card{
+text-decoration:none;
+
+padding:25px;
+
+border-radius:18px;
+
+background:rgba(255,255,255,.10);
+border:1px solid rgba(255,255,255,.15);
+
+color:white;
+font-size:18px;
+
+transition:.3s;
+}
+
+/* Hover */
+.resource-card:hover{
+transform:translateY(-5px) scale(1.02);
+box-shadow:0 0 18px rgba(249,115,22,.5);
+color:#f97316;
+}
+
+
+
+/* RESPONSIVE DESIGN */
+
+/* Tablets */
+@media (max-width: 768px){
+
+.card,
+.dashboard-card,
+.admin-panel-card,
+.admin-login-card{
+width:90%;
+padding:30px;
+}
+
+.semester-grid{
+grid-template-columns:repeat(2,1fr);
+}
+
+.logo{
+width:140px;
+}
+
+h1{
+font-size:32px;
+}
+
+}
+
+
+/* Mobile Phones */
+@media (max-width: 480px){
+
+.semester-grid{
+grid-template-columns:1fr;
+}
+
+.card,
+.dashboard-card,
+.admin-panel-card,
+.admin-login-card{
+width:95%;
+padding:25px;
+}
+
+.logo{
+width:120px;
+}
+
+h1{
+font-size:26px;
+}
+
+.tagline{
+font-size:14px;
+}
+
+.desc{
+font-size:13px;
+}
+
+.btn{
+padding:12px 20px;
+font-size:14px;
+}
+
+}
+
+/* Upload Page Improvements */
+
+.admin-login-card form {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+    margin-top: 20px;
+}
+
+.admin-login-card input,
+.admin-login-card select {
+    width: 100%;
+    padding: 14px;
+    border: none;
+    border-radius: 12px;
+    outline: none;
+    font-size: 15px;
+    background: rgba(255,255,255,0.15);
+    color: white;
+    backdrop-filter: blur(10px);
+}
+
+.admin-login-card input::placeholder {
+    color: rgba(255,255,255,0.7);
+}
+
+.admin-login-card select option {
+    color: black;
+}
+
+.admin-login-card input[type="file"] {
+    padding: 10px;
+    background: rgba(255,255,255,0.12);
+    cursor: pointer;
+}
+
+.admin-login-card .btn {
+    margin-top: 10px;
+}
+
+.admin-login-card {
+    width: 420px;
+    padding: 40px;
+}
