@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Manage Subjects</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+
+<div class="particles"></div>
+
+<div class="manage-container">
+
+    <div class="manage-header">
+
+        <div>
+            <h1>🎓 Manage Subjects</h1>
+            <p>Add, edit or delete subjects and manage available resources</p>
+        </div>
+
+        <div class="stats-box">
+
+            <div class="stat-card">
+                <h3>{{ subjects|length }}</h3>
+                <p>Total Subjects</p>
+            </div>
+
+            <div class="stat-card">
+                <h3>{{ semesters|length }}</h3>
+                <p>Total Semesters</p>
+            </div>
+
+        </div>
+
+    </div>
+
+    <div class="add-subject-box">
+
+        <h2>➕ Add New Subject</h2>
+
+        <p>
+            Select semester, enter subject details and choose available resources
+        </p>
+
+        <form action="/manage-subjects" method="POST" class="subject-form">
+
+            <div class="form-row">
+
+                <select name="semester" required>
+
+                    <option value="">Select Semester</option>
+
+                    {% for sem in semesters %}
+                    <option>{{ sem[0] }}</option>
+                    {% endfor %}
+
+                </select>
+
+                <input type="text"
+                       name="subject_name"
+                       placeholder="e.g. BCS301 - Data Structures"
+                       required>
+
+            </div>
+
+            <div class="resource-checks">
+
+                <label>
+                    <input type="checkbox" name="has_notes" checked>
+                    Notes
+                </label>
+
+                <label>
+                    <input type="checkbox" name="has_pyqs" checked>
+                    PYQs
+                </label>
+
+                <label>
+                    <input type="checkbox" name="has_lab">
+                    Lab Programs
+                </label>
+
+                <label>
+                    <input type="checkbox" name="has_important" checked>
+                    Important Questions
+                </label>
+
+            </div>
+
+            <button type="submit" class="btn add-btn">
+                Add Subject
+            </button>
+
+        </form>
+
+    </div>
+
+    <div class="subjects-section">
+
+        <h2>📚 Subjects by Semester</h2>
+
+        {% for sem in semesters %}
+
+        <div class="semester-block">
+
+            <div class="semester-title">
+                <h3>{{ sem[0] }}</h3>
+            </div>
+
+            <div class="subject-list">
+
+                {% for subject in subjects %}
+
+                    {% if subject[1] == sem[0] %}
+
+                    <div class="subject-row">
+
+                        <div class="subject-name">
+                            <strong>{{ subject[2] }}</strong>
+                        </div>
+
+                        <div class="resource-tags">
+
+                            {% if subject[3] %}
+                            <span class="tag notes-tag">Notes</span>
+                            {% endif %}
+
+                            {% if subject[4] %}
+                            <span class="tag pyq-tag">PYQs</span>
+                            {% endif %}
+
+                            {% if subject[5] %}
+                            <span class="tag lab-tag">Lab</span>
+                            {% endif %}
+
+                            {% if subject[6] %}
+                            <span class="tag important-tag">Important</span>
+                            {% endif %}
+
+                        </div>
+
+                        <div class="subject-actions">
+
+                            <a href="/edit-subject/{{ subject[0] }}"
+                               class="edit-btn">
+                               Edit
+                            </a>
+
+                            <a href="/delete-subject/{{ subject[0] }}"
+                               class="delete-btn"
+                               onclick="return confirm('Delete this subject?')">
+
+                               Delete
+
+                            </a>
+
+                        </div>
+
+                    </div>
+
+                    {% endif %}
+
+                {% endfor %}
+
+            </div>
+
+        </div>
+
+        {% endfor %}
+
+    </div>
+
+    <a href="/admin-panel" class="back-link">
+        ← Back to Admin Panel
+    </a>
+
+</div>
+
+</body>
+</html>

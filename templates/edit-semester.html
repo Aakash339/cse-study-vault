@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Edit Semester</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+
+<div class="particles"></div>
+
+<div class="admin-login-card">
+
+    <h2>Edit Semester</h2>
+    <p class="tagline">Update semester details</p>
+
+    <form action="/edit-semester/{{ semester[0] }}" method="POST">
+
+        <input type="text" name="semester_name" value="{{ semester[1] }}" required>
+
+        <div class="checkbox-group">
+            <label>
+                <input type="checkbox" name="is_active" {% if semester[2] %}checked{% endif %}>
+                Active Semester
+            </label>
+        </div>
+
+        <button type="submit" class="btn">Update Semester</button>
+
+    </form>
+
+    <a href="/manage-semesters" class="back-link">← Back</a>
+
+</div>
+
+</body>
+</html>

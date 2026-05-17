@@ -13,17 +13,17 @@
 <div class="dashboard-card">
 
     <img src="{{ url_for('static', filename='logo.jpeg') }}" class="logo" alt="logo">
+
     <h2>Choose Your Semester</h2>
     <p class="tagline">Access organized study materials</p>
 
     <div class="semester-grid">
 
-        <a href="/semester3" class="semester-card">Semester 3</a>
-        <a href="/semester4" class="semester-card">Semester 4</a>
-        <a href="/semester5" class="semester-card">Semester 5</a>
-        <a href="/semester6" class="semester-card">Semester 6</a>
-        <a href="/semester7" class="semester-card">Semester 7</a>
-        <a href="/semester8" class="semester-card">Semester 8</a>
+        {% for sem in semesters %}
+        <a href="/semester/{{ sem[0] }}" class="semester-card">
+            {{ sem[0] }}
+        </a>
+        {% endfor %}
 
     </div>
 

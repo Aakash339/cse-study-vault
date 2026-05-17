@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Edit Material</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+
+<div class="particles"></div>
+
+<div class="admin-login-card">
+
+    <h2>Edit Material</h2>
+
+    <p class="tagline">
+        Update uploaded resource details
+    </p>
+
+    <form action="/edit-material/{{ material[0] }}"
+          method="POST"
+          enctype="multipart/form-data">
+
+        <input type="text"
+               name="title"
+               value="{{ material[1] }}"
+               required>
+
+        <select name="semester" required>
+
+            <option {% if material[2] == "Semester 3" %}selected{% endif %}>
+                Semester 3
+            </option>
+
+            <option {% if material[2] == "Semester 4" %}selected{% endif %}>
+                Semester 4
+            </option>
+
+            <option {% if material[2] == "Semester 5" %}selected{% endif %}>
+                Semester 5
+            </option>
+
+            <option {% if material[2] == "Semester 6" %}selected{% endif %}>
+                Semester 6
+            </option>
+
+            <option {% if material[2] == "Semester 7" %}selected{% endif %}>
+                Semester 7
+            </option>
+
+            <option {% if material[2] == "Semester 8" %}selected{% endif %}>
+                Semester 8
+            </option>
+
+        </select>
+
+        <input type="text"
+               name="subject"
+               value="{{ material[3] }}"
+               required>
+
+        <select name="resource_type" required>
+
+            <option {% if material[4] == "Notes" %}selected{% endif %}>
+                Notes
+            </option>
+
+            <option {% if material[4] == "PYQs" %}selected{% endif %}>
+                PYQs
+            </option>
+
+            <option {% if material[4] == "Lab Programs" %}selected{% endif %}>
+                Lab Programs
+            </option>
+
+            <option {% if material[4] == "Important Questions" %}selected{% endif %}>
+                Important Questions
+            </option>
+
+        </select>
+
+        <input type="file" name="file">
+
+        <button type="submit" class="btn">
+            Update Material
+        </button>
+
+    </form>
+
+    <a href="/admin-resources" class="back-link">
+        ← Back
+    </a>
+
+</div>
+
+</body>
+</html>

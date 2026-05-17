@@ -20,16 +20,13 @@
         <input type="text" name="title" placeholder="Material Title" required>
 
         <!-- Semester Dropdown -->
-        <select name="semester" id="semester" required onchange="updateSubjects()">
+        <select name="semester" id="semester" required onchange="loadSubjects()">
 
             <option value="">Select Semester</option>
 
-            <option value="Semester 3">Semester 3</option>
-            <option value="Semester 4">Semester 4</option>
-            <option value="Semester 5">Semester 5</option>
-            <option value="Semester 6">Semester 6</option>
-            <option value="Semester 7">Semester 7</option>
-            <option value="Semester 8">Semester 8</option>
+            {% for sem in semesters %}
+            <option value="{{ sem[0] }}">{{ sem[0] }}</option>
+            {% endfor %}
 
         </select>
 
@@ -65,109 +62,28 @@
 
 
 <script>
-
-function updateSubjects() {
-
+function loadSubjects() {
     const semester = document.getElementById("semester").value;
-
     const subjectDropdown = document.getElementById("subject");
 
     subjectDropdown.innerHTML = '<option value="">Select Subject</option>';
 
-    let subjects = [];
-
-    if (semester === "Semester 3") {
-
-        subjects = [
-            "BCS301",
-            "BCS302",
-            "BCS303",
-            "BCS304",
-            "BSCK307",
-            "BCS306A"
-        ];
-
+    if (semester === "") {
+        return;
     }
 
-    else if (semester === "Semester 4") {
-
-        subjects = [
-            "BCS401",
-            "BCS402",
-            "BCS403",
-            "BCS405B",
-            "BCS456C",
-            "BBOK407",
-            "BUHK408"
-        ];
-
-    }
-
-    else if (semester === "Semester 5") {
-
-        subjects = [
-            "BCS501",
-            "BCS502",
-            "BCS503",
-            "BCS504",
-            "BCS505",
-            "BCS506"
-        ];
-
-    }
-
-    else if (semester === "Semester 6") {
-
-        subjects = [
-            "BCS601",
-            "BCS602",
-            "BCS603",
-            "BCS604",
-            "BCS605",
-            "BCS606"
-        ];
-
-    }
-
-    else if (semester === "Semester 7") {
-
-        subjects = [
-            "BCS701",
-            "BCS702",
-            "BCS703",
-            "BCS704",
-            "BCS705",
-            "BCS706"
-        ];
-
-    }
-
-    else if (semester === "Semester 8") {
-
-        subjects = [
-            "BCS801",
-            "BCS802",
-            "BCS803",
-            "BCS804",
-            "BCS805",
-            "BCS806"
-        ];
-
-    }
-
-    subjects.forEach(function(subject) {
-
-        let option = document.createElement("option");
-
-        option.value = subject;
-
-        option.textContent = subject;
-
-        subjectDropdown.appendChild(option);
-
-    });
-
+    fetch("/get-subjects/" + semester)
+        .then(response => response.json())
+        .then(data => {
+            data.subjects.forEach(subject => {
+                let option = document.createElement("option");
+                option.value = subject;
+                option.textContent = subject;
+                subjectDropdown.appendChild(option);
+            });
+        });
 }
+
 
 </script>
 

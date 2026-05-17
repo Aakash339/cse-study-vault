@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Edit Subject</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+
+<div class="particles"></div>
+
+<div class="admin-login-card">
+
+    <h2>Edit Subject</h2>
+    <p class="tagline">Update subject resource availability</p>
+
+    <form action="/edit-subject/{{ subject[0] }}" method="POST">
+
+        <select name="semester" required>
+            <option {% if subject[1] == "Semester 3" %}selected{% endif %}>Semester 3</option>
+            <option {% if subject[1] == "Semester 4" %}selected{% endif %}>Semester 4</option>
+            <option {% if subject[1] == "Semester 5" %}selected{% endif %}>Semester 5</option>
+            <option {% if subject[1] == "Semester 6" %}selected{% endif %}>Semester 6</option>
+            <option {% if subject[1] == "Semester 7" %}selected{% endif %}>Semester 7</option>
+            <option {% if subject[1] == "Semester 8" %}selected{% endif %}>Semester 8</option>
+        </select>
+
+        <input type="text" name="subject_name" value="{{ subject[2] }}" required>
+
+        <div class="checkbox-group">
+            <label><input type="checkbox" name="has_notes" {% if subject[3] %}checked{% endif %}> Notes</label>
+            <label><input type="checkbox" name="has_pyqs" {% if subject[4] %}checked{% endif %}> PYQs</label>
+            <label><input type="checkbox" name="has_lab" {% if subject[5] %}checked{% endif %}> Lab Programs</label>
+            <label><input type="checkbox" name="has_important" {% if subject[6] %}checked{% endif %}> Important Questions</label>
+        </div>
+
+        <button type="submit" class="btn">Update Subject</button>
+
+    </form>
+
+    <a href="/manage-subjects" class="back-link">← Back</a>
+
+</div>
+
+</body>
+</html>

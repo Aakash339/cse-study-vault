@@ -13,7 +13,9 @@ os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 
 
 def init_db():
+
     conn = sqlite3.connect("database.db")
+
     cursor = conn.cursor()
 
     cursor.execute("""
@@ -27,7 +29,30 @@ def init_db():
         )
     """)
 
+    cursor.execute("""
+        CREATE TABLE IF NOT EXISTS subjects (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            semester TEXT,
+            subject_name TEXT,
+            has_notes INTEGER,
+            has_pyqs INTEGER,
+            has_lab INTEGER,
+            has_important INTEGER
+        )
+    """)
+
+
+    cursor.execute("""
+        CREATE TABLE IF NOT EXISTS semesters (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            semester_name TEXT,
+            is_active INTEGER
+        )
+    """)
+
+
     conn.commit()
+
     conn.close()
 
 
@@ -41,8 +66,20 @@ def home():
 
 @app.route("/dashboard")
 def dashboard():
-    return render_template("dashboard.html")
+    conn = sqlite3.connect("database.db")
+    cursor = conn.cursor()
 
+    cursor.execute("""
+        SELECT semester_name
+        FROM semesters
+        WHERE is_active = 1
+        ORDER BY CAST(REPLACE(semester_name, 'Semester ', '') AS INTEGER)
+    """)
+
+    semesters = cursor.fetchall()
+    conn.close()
+
+    return render_template("dashboard.html", semesters=semesters)
 
 @app.route("/admin-login")
 def admin_login():
@@ -56,62 +93,108 @@ def admin_panel():
 
 @app.route("/upload", methods=["GET", "POST"])
 def upload():
+
+    conn = sqlite3.connect("database.db")
+    cursor = conn.cursor()
+
     if request.method == "POST":
+
         title = request.form["title"]
         semester = request.form["semester"]
         subject = request.form["subject"]
         resource_type = request.form["resource_type"]
+
         file = request.files["file"]
 
         if file:
+
             filename = secure_filename(file.filename)
+
             save_path = os.path.join(app.config["UPLOAD_FOLDER"], filename)
+
             file.save(save_path)
 
-            conn = sqlite3.connect("database.db")
-            cursor = conn.cursor()
-
             cursor.execute("""
-                INSERT INTO materials (title, semester, subject, resource_type, filename)
+                INSERT INTO materials
+                (title, semester, subject, resource_type, filename)
                 VALUES (?, ?, ?, ?, ?)
-            """, (title, semester, subject, resource_type, filename))
+            """, (
+                title,
+                semester,
+                subject,
+                resource_type,
+                filename
+            ))
 
             conn.commit()
+
             conn.close()
 
             return redirect("/admin-panel")
 
-    return render_template("upload.html")
+    cursor.execute("""
+        SELECT semester_name
+        FROM semesters
+        WHERE is_active = 1
+        ORDER BY CAST(REPLACE(semester_name, 'Semester ', '') AS INTEGER)
+    """)
+
+    semesters = cursor.fetchall()
+
+    conn.close()
+
+    return render_template("upload.html", semesters=semesters)
+
+def get_subjects(semester):
+    conn = sqlite3.connect("database.db")
+    cursor = conn.cursor()
+
+    cursor.execute("""
+        SELECT subject_name
+        FROM subjects
+        WHERE semester = ?
+    """, (semester,))
+
+    subjects = cursor.fetchall()
+    conn.close()
+
+    return subjects
 
 
 @app.route("/semester3")
 def semester3():
-    return render_template("semester3.html")
+    subjects = get_subjects("Semester 3")
+    return render_template("semester.html", semester="Semester 3", subjects=subjects)
 
 
 @app.route("/semester4")
 def semester4():
-    return render_template("semester4.html")
+    subjects = get_subjects("Semester 4")
+    return render_template("semester.html", semester="Semester 4", subjects=subjects)
 
 
 @app.route("/semester5")
 def semester5():
-    return render_template("semester5.html")
+    subjects = get_subjects("Semester 5")
+    return render_template("semester.html", semester="Semester 5", subjects=subjects)
 
 
 @app.route("/semester6")
 def semester6():
-    return render_template("semester6.html")
+    subjects = get_subjects("Semester 6")
+    return render_template("semester.html", semester="Semester 6", subjects=subjects)
 
 
 @app.route("/semester7")
 def semester7():
-    return render_template("semester7.html")
+    subjects = get_subjects("Semester 7")
+    return render_template("semester.html", semester="Semester 7", subjects=subjects)
 
 
 @app.route("/semester8")
 def semester8():
-    return render_template("semester8.html")
+    subjects = get_subjects("Semester 8")
+    return render_template("semester.html", semester="Semester 8", subjects=subjects)
 
 @app.route("/resources")
 def resources_redirect():
@@ -119,8 +202,26 @@ def resources_redirect():
 
 @app.route("/resources/<semester>/<subject>")
 def resources(semester, subject):
-    return render_template("resources.html", semester=semester, subject=subject)
 
+    conn = sqlite3.connect("database.db")
+    cursor = conn.cursor()
+
+    cursor.execute("""
+        SELECT has_notes, has_pyqs, has_lab, has_important
+        FROM subjects
+        WHERE semester = ? AND subject_name = ?
+    """, (semester, subject))
+
+    subject_data = cursor.fetchone()
+
+    conn.close()
+
+    return render_template(
+        "resources.html",
+        semester=semester,
+        subject=subject,
+        subject_data=subject_data
+    )
 
 def get_materials(semester, subject, resource_type):
     conn = sqlite3.connect("database.db")
@@ -156,6 +257,273 @@ def materials_page(semester, subject, resource_type):
 
     return "Invalid resource type"
 
+@app.route("/admin-resources")
+def admin_resources():
+    conn = sqlite3.connect("database.db")
+    cursor = conn.cursor()
+
+    cursor.execute("""
+        SELECT id, title, semester, subject, resource_type, filename
+        FROM materials
+    """)
+
+    materials = cursor.fetchall()
+    conn.close()
+
+    return render_template("admin-resources.html", materials=materials)
+
+
+@app.route("/delete-material/<int:id>")
+def delete_material(id):
+    conn = sqlite3.connect("database.db")
+    cursor = conn.cursor()
+
+    cursor.execute("SELECT filename FROM materials WHERE id = ?", (id,))
+    file = cursor.fetchone()
+
+    if file:
+        file_path = os.path.join(app.config["UPLOAD_FOLDER"], file[0])
+
+        if os.path.exists(file_path):
+            os.remove(file_path)
+
+        cursor.execute("DELETE FROM materials WHERE id = ?", (id,))
+        conn.commit()
+
+    conn.close()
+
+    return redirect("/admin-resources")
+
+
+@app.route("/manage-subjects", methods=["GET", "POST"])
+def manage_subjects():
+
+    conn = sqlite3.connect("database.db")
+    cursor = conn.cursor()
+
+    if request.method == "POST":
+
+        semester = request.form["semester"]
+        subject_name = request.form["subject_name"]
+
+        has_notes = 1 if "has_notes" in request.form else 0
+        has_pyqs = 1 if "has_pyqs" in request.form else 0
+        has_lab = 1 if "has_lab" in request.form else 0
+        has_important = 1 if "has_important" in request.form else 0
+
+        cursor.execute("""
+            INSERT INTO subjects
+            (semester, subject_name, has_notes, has_pyqs, has_lab, has_important)
+            VALUES (?, ?, ?, ?, ?, ?)
+        """, (
+            semester,
+            subject_name,
+            has_notes,
+            has_pyqs,
+            has_lab,
+            has_important
+        ))
+
+        conn.commit()
+
+    cursor.execute("""
+        SELECT * FROM subjects
+    """)
+    subjects = cursor.fetchall()
+
+    cursor.execute("""
+        SELECT semester_name
+        FROM semesters
+        WHERE is_active = 1
+        ORDER BY CAST(REPLACE(semester_name, 'Semester ', '') AS INTEGER)
+    """)
+    semesters = cursor.fetchall()
+
+    conn.close()
+
+    return render_template(
+        "manage-subjects.html",
+        subjects=subjects,
+        semesters=semesters
+    )
+
+@app.route("/delete-subject/<int:id>")
+def delete_subject(id):
+    conn = sqlite3.connect("database.db")
+    cursor = conn.cursor()
+
+    cursor.execute("DELETE FROM subjects WHERE id = ?", (id,))
+    conn.commit()
+    conn.close()
+
+    return redirect("/manage-subjects")
+
+
+@app.route("/edit-subject/<int:id>", methods=["GET", "POST"])
+def edit_subject(id):
+    conn = sqlite3.connect("database.db")
+    cursor = conn.cursor()
+
+    if request.method == "POST":
+        semester = request.form["semester"]
+        subject_name = request.form["subject_name"]
+
+        has_notes = 1 if "has_notes" in request.form else 0
+        has_pyqs = 1 if "has_pyqs" in request.form else 0
+        has_lab = 1 if "has_lab" in request.form else 0
+        has_important = 1 if "has_important" in request.form else 0
+
+        cursor.execute("""
+            UPDATE subjects
+            SET semester = ?, subject_name = ?, has_notes = ?, has_pyqs = ?, has_lab = ?, has_important = ?
+            WHERE id = ?
+        """, (semester, subject_name, has_notes, has_pyqs, has_lab, has_important, id))
+
+        conn.commit()
+        conn.close()
+
+        return redirect("/manage-subjects")
+
+    cursor.execute("SELECT * FROM subjects WHERE id = ?", (id,))
+    subject = cursor.fetchone()
+
+    conn.close()
+
+    return render_template("edit-subject.html", subject=subject)
+
+@app.route("/get-subjects/<semester>")
+def get_subjects_api(semester):
+    conn = sqlite3.connect("database.db")
+    cursor = conn.cursor()
+
+    cursor.execute("""
+        SELECT subject_name
+        FROM subjects
+        WHERE semester = ?
+    """, (semester,))
+
+    subjects = cursor.fetchall()
+    conn.close()
+
+    subject_list = [subject[0] for subject in subjects]
+
+    return {"subjects": subject_list}
+
+
+@app.route("/edit-material/<int:id>", methods=["GET", "POST"])
+def edit_material(id):
+    conn = sqlite3.connect("database.db")
+    cursor = conn.cursor()
+
+    if request.method == "POST":
+        title = request.form["title"]
+        semester = request.form["semester"]
+        subject = request.form["subject"]
+        resource_type = request.form["resource_type"]
+        file = request.files["file"]
+
+        if file and file.filename != "":
+            filename = secure_filename(file.filename)
+            save_path = os.path.join(app.config["UPLOAD_FOLDER"], filename)
+            file.save(save_path)
+
+            cursor.execute("""
+                UPDATE materials
+                SET title = ?, semester = ?, subject = ?, resource_type = ?, filename = ?
+                WHERE id = ?
+            """, (title, semester, subject, resource_type, filename, id))
+        else:
+            cursor.execute("""
+                UPDATE materials
+                SET title = ?, semester = ?, subject = ?, resource_type = ?
+                WHERE id = ?
+            """, (title, semester, subject, resource_type, id))
+
+        conn.commit()
+        conn.close()
+
+        return redirect("/admin-resources")
+
+    cursor.execute("SELECT * FROM materials WHERE id = ?", (id,))
+    material = cursor.fetchone()
+
+    conn.close()
+
+    return render_template("edit-material.html", material=material)
+
+
+@app.route("/manage-semesters", methods=["GET", "POST"])
+def manage_semesters():
+
+    conn = sqlite3.connect("database.db")
+    cursor = conn.cursor()
+
+    if request.method == "POST":
+        semester_name = request.form["semester_name"]
+        is_active = 1 if "is_active" in request.form else 0
+
+        cursor.execute("""
+            INSERT INTO semesters (semester_name, is_active)
+            VALUES (?, ?)
+        """, (semester_name, is_active))
+
+        conn.commit()
+
+    cursor.execute("""
+        SELECT * FROM semesters
+        ORDER BY CAST(REPLACE(semester_name, 'Semester ', '') AS INTEGER)
+    """)
+    semesters = cursor.fetchall()
+
+    conn.close()
+
+    return render_template("manage-semesters.html", semesters=semesters)
+
+@app.route("/delete-semester/<int:id>")
+def delete_semester(id):
+    conn = sqlite3.connect("database.db")
+    cursor = conn.cursor()
+
+    cursor.execute("DELETE FROM semesters WHERE id = ?", (id,))
+    conn.commit()
+    conn.close()
+
+    return redirect("/manage-semesters")
+
+
+@app.route("/edit-semester/<int:id>", methods=["GET", "POST"])
+def edit_semester(id):
+    conn = sqlite3.connect("database.db")
+    cursor = conn.cursor()
+
+    if request.method == "POST":
+        semester_name = request.form["semester_name"]
+        is_active = 1 if "is_active" in request.form else 0
+
+        cursor.execute("""
+            UPDATE semesters
+            SET semester_name = ?, is_active = ?
+            WHERE id = ?
+        """, (semester_name, is_active, id))
+
+        conn.commit()
+        conn.close()
+
+        return redirect("/manage-semesters")
+
+    cursor.execute("SELECT * FROM semesters WHERE id = ?", (id,))
+    semester = cursor.fetchone()
+
+    conn.close()
+
+    return render_template("edit-semester.html", semester=semester)
+
+
+
+@app.route("/semester/<semester>")
+def semester_dynamic(semester):
+    subjects = get_subjects(semester)
+    return render_template("semester.html", semester=semester, subjects=subjects)
 
 if __name__ == "__main__":
     app.run(debug=True)

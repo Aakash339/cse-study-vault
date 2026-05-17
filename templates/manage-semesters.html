@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Manage Semesters</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+
+<div class="particles"></div>
+
+<div class="manage-container">
+
+    <div class="manage-header">
+        <div>
+            <h1>📚 Manage Semesters</h1>
+            <p>Add, edit, delete and control semester visibility</p>
+        </div>
+
+        <div class="stats-box">
+            <div class="stat-card">
+                <h3>{{ semesters|length }}</h3>
+                <p>Total Semesters</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="add-subject-box">
+
+        <h2>➕ Add New Semester</h2>
+
+        <form action="/manage-semesters" method="POST" class="subject-form">
+
+            <input type="text" name="semester_name" placeholder="Example: Semester 3" required>
+
+            <div class="checkbox-group">
+                <label>
+                    <input type="checkbox" name="is_active" checked>
+                    Active Semester
+                </label>
+            </div>
+
+            <button type="submit" class="btn add-btn">Add Semester</button>
+
+        </form>
+
+    </div>
+
+    <div class="subjects-section">
+
+        <h2>Existing Semesters</h2>
+
+        <div class="subject-list">
+
+            {% for sem in semesters %}
+            <div class="subject-row">
+
+                <div class="subject-name">
+                    <strong>{{ sem[1] }}</strong>
+                </div>
+
+                <div class="resource-tags">
+                    {% if sem[2] %}
+                    <span class="tag notes-tag">Active</span>
+                    {% else %}
+                    <span class="tag important-tag">Inactive</span>
+                    {% endif %}
+                </div>
+
+                <div class="subject-actions">
+                    <a href="/edit-semester/{{ sem[0] }}" class="edit-btn">Edit</a>
+
+                    <a href="/delete-semester/{{ sem[0] }}"
+                       class="delete-btn"
+                       onclick="return confirm('Delete this semester?')">
+                       Delete
+                    </a>
+                </div>
+
+            </div>
+            {% endfor %}
+
+        </div>
+
+    </div>
+
+    <a href="/admin-panel" class="back-link">← Back to Admin Panel</a>
+
+</div>
+
+</body>
+</html>

@@ -20,21 +20,29 @@
 
     <div class="semester-grid">
 
+        {% if subject_data and subject_data[0] %}
         <a href="/materials/{{ semester }}/{{ subject }}/Notes" class="resource-card">
             📘 Notes
         </a>
+        {% endif %}
 
+        {% if subject_data and subject_data[1] %}
         <a href="/materials/{{ semester }}/{{ subject }}/PYQs" class="resource-card">
             📝 Model Papers
         </a>
+        {% endif %}
 
+        {% if subject_data and subject_data[2] %}
         <a href="/materials/{{ semester }}/{{ subject }}/Lab Programs" class="resource-card">
             💻 Lab Programs
         </a>
+        {% endif %}
 
+        {% if subject_data and subject_data[3] %}
         <a href="/materials/{{ semester }}/{{ subject }}/Important Questions" class="resource-card">
             ⭐ Important Questions
         </a>
+        {% endif %}
 
     </div>
 
