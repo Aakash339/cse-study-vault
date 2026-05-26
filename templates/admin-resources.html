@@ -10,59 +10,111 @@
 
 <div class="particles"></div>
 
-<div class="admin-panel-card">
+<div class="manage-container">
 
-    <h2>Uploaded Resources</h2>
-    <p class="tagline">View all uploaded study materials</p>
+    <div class="manage-header">
+        <div>
+            <h1>📂 Uploaded Resources</h1>
+            <p>Semester-wise and subject-wise uploaded study materials</p>
+        </div>
 
-    <div class="admin-options">
+        <div class="stats-box">
+            <div class="stat-card">
+                <h3>{{ materials|length }}</h3>
+                <p>Total Materials</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="subjects-section">
+
+        <h2>📚 Resource List</h2>
+
+        {% set ns = namespace(current_semester='', current_subject='') %}
 
         {% for item in materials %}
-        <div class="admin-option-card">
 
-            <strong>{{ item[1] }}</strong>
+            {% if ns.current_semester != item[2] %}
+                {% set ns.current_semester = item[2] %}
+                {% set ns.current_subject = '' %}
 
-            <br><br>
+                <div class="semester-block">
+                    <div class="semester-title">
+                        <h3>{{ item[2] }}</h3>
+                    </div>
+                </div>
+            {% endif %}
 
-            <small>
-                {{ item[2] }} | {{ item[3] }}
-                <br>
-                {{ item[4] }}
-            </small>
+            {% if ns.current_subject != item[3] %}
+                {% set ns.current_subject = item[3] %}
 
-            <br><br>
+                <div class="subject-resource-title">
+                    <h4>{{ item[3] }}</h4>
+                </div>
 
-            <a href="{{ url_for('static', filename='uploads/' + item[5]) }}"
-               target="_blank"
-               class="back-link">
+                <div class="resource-table">
 
-               Open File
+                    <div class="resource-row resource-heading">
+                        <div>#</div>
+                        <div>Title</div>
+                        <div>Type</div>
+                        <div>File</div>
+                        <div>Actions</div>
+                    </div>
+            {% endif %}
 
-            </a>
+                    <div class="resource-row grouped-resource-row">
 
-            <br><br>
-            <a href="/edit-material/{{ item[0] }}" class="back-link">
-                Edit
-            </a>
+                        <div>{{ loop.index }}</div>
 
-            <br><br>
+                        <div>
+                            <strong>{{ item[1] }}</strong>
+                        </div>
 
-            <a href="/delete-material/{{ item[0] }}"
-               class="back-link"
-               onclick="return confirm('Are you sure you want to delete this material?')">
+                        <div>
+                            <span class="tag important-tag">
+                                {{ item[4] }}
+                            </span>
+                        </div>
 
-               Delete
+                        <div>
+                            <small>{{ item[5] }}</small>
+                        </div>
 
-            </a>
+                        <div class="resource-actions">
 
-        </div>
+                            <a href="{{ url_for('static', filename='uploads/' + item[5]) }}"
+                               target="_blank"
+                               class="open-btn">
+                               Open
+                            </a>
+
+                            <a href="/edit-material/{{ item[0] }}"
+                               class="edit-btn">
+                               Edit
+                            </a>
+
+                            <a href="/delete-material/{{ item[0] }}"
+                               class="delete-btn"
+                               onclick="return confirm('Are you sure you want to delete this material?')">
+                               Delete
+                            </a>
+
+                        </div>
+
+                    </div>
+
+            {% set next_item = materials[loop.index] if not loop.last else None %}
+
+            {% if loop.last or next_item[3] != item[3] or next_item[2] != item[2] %}
+                </div>
+            {% endif %}
+
         {% endfor %}
 
     </div>
 
-    <a href="/admin-panel" class="back-link">
-        ← Back to Admin Panel
-    </a>
+    <a href="/admin-panel" class="back-link">← Back to Admin Panel</a>
 
 </div>
 

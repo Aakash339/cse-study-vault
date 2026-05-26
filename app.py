@@ -265,6 +265,10 @@ def admin_resources():
     cursor.execute("""
         SELECT id, title, semester, subject, resource_type, filename
         FROM materials
+        ORDER BY 
+        CAST(REPLACE(semester, 'Semester ', '') AS INTEGER),
+        subject,
+        resource_type
     """)
 
     materials = cursor.fetchall()
