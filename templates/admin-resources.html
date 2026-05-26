@@ -29,7 +29,7 @@
     <div class="subjects-section">
 
         <h2>📚 Resource List</h2>
-
+        
         {% set ns = namespace(current_semester='', current_subject='') %}
 
         {% for item in materials %}
@@ -78,12 +78,22 @@
                         </div>
 
                         <div>
-                            <small>{{ item[5] }}</small>
+                            <small>
+                                {{ item[5] }}
+                                <br>
+
+                                {% set ext = item[5].split('.')[-1].upper() %}
+
+                                <span class="file-badge">
+                                    {{ ext }}
+                                </span>
+
+                            </small>
                         </div>
 
                         <div class="resource-actions">
 
-                            <a href="{{ url_for('static', filename='uploads/' + item[5]) }}"
+                            <a href="/view-file/{{ item[5] }}"
                                target="_blank"
                                class="open-btn">
                                Open
@@ -117,6 +127,7 @@
     <a href="/admin-panel" class="back-link">← Back to Admin Panel</a>
 
 </div>
+
 
 </body>
 </html>

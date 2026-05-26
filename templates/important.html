@@ -19,7 +19,7 @@
 
         {% for item in materials %}
 
-        <a href="{{ url_for('static', filename='uploads/' + item[3]) }}" target="_blank" class="semester-card">
+        <a href="/view-file/{{ item[3] }}" target="_blank" class="semester-card">
 
             {{ item[0] }}
 

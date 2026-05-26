@@ -969,3 +969,17 @@ font-size:20px;
 .grouped-resource-row{
 grid-template-columns:.4fr 2fr 1.2fr 2fr 2fr;
 }
+
+
+.file-badge{
+display:inline-block;
+margin-top:6px;
+padding:5px 10px;
+border-radius:10px;
+background:rgba(59,130,246,.18);
+color:#93c5fd;
+font-size:12px;
+font-weight:600;
+letter-spacing:.5px;
+}
+

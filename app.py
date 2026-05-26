@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect
+from flask import Flask, render_template, request, redirect, send_from_directory
 import os
 import sqlite3
 from werkzeug.utils import secure_filename
@@ -528,6 +528,14 @@ def edit_semester(id):
 def semester_dynamic(semester):
     subjects = get_subjects(semester)
     return render_template("semester.html", semester=semester, subjects=subjects)
+
+@app.route("/view-file/<filename>")
+def view_file(filename):
+    return send_from_directory(
+        app.config["UPLOAD_FOLDER"],
+        filename,
+        as_attachment=False
+    )
 
 if __name__ == "__main__":
     app.run(debug=True)
