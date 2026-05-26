@@ -983,3 +983,11 @@ font-weight:600;
 letter-spacing:.5px;
 }
 
+.success-msg{
+margin:15px 0;
+padding:12px;
+border-radius:12px;
+background:rgba(34,197,94,.20);
+color:#86efac;
+font-weight:600;
+}

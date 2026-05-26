@@ -14,6 +14,14 @@
         <img src="{{ url_for('static', filename='logo.jpeg') }}" alt="Logo" class="logo">
         <h2>Admin Panel</h2>
         <p class="tagline">Manage study materials efficiently</p>
+        {% with messages = get_flashed_messages() %}
+            {% if messages %}
+                {% for message in messages %}
+                    <p class="success-msg">{{ message }}</p>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+
 
         <div class="admin-options">
             <a href="/upload" class="admin-option-card">Upload New Material</a>
@@ -24,6 +32,17 @@
 
         <a href="/" class="back-link">← Logout</a>
     </div>
+
+<script>
+setTimeout(function() {
+    let messages = document.querySelectorAll(".success-msg");
+
+    messages.forEach(function(msg) {
+        msg.style.display = "none";
+    });
+
+}, 3000);
+</script>
 
 </body>
 </html>

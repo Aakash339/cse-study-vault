@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect, send_from_directory
+from flask import Flask, render_template, request, redirect, send_from_directory, flash, session
 import os
 import sqlite3
 from werkzeug.utils import secure_filename
@@ -6,6 +6,13 @@ from werkzeug.utils import secure_filename
 #this is a testing line
 
 app = Flask(__name__)
+
+app.secret_key = "cse-study-vault-secret-key"
+
+def admin_required():
+    if "admin" not in session:
+        return redirect("/admin-login")
+    return None
 
 UPLOAD_FOLDER = "static/uploads"
 app.config["UPLOAD_FOLDER"] = UPLOAD_FOLDER
@@ -81,19 +88,45 @@ def dashboard():
 
     return render_template("dashboard.html", semesters=semesters)
 
-@app.route("/admin-login")
+@app.route("/admin-login", methods=["GET", "POST"])
 def admin_login():
-    return render_template("admin-login.html")
 
+    if request.method == "POST":
+
+        email = request.form["email"]
+        password = request.form["password"]
+
+        if email == "aakash.cse24@cmrit.ac.in" and password == "@@k@sh18":
+
+            session["admin"] = True
+
+            flash("Login successful!")
+
+            return redirect("/admin-panel")
+
+        else:
+
+            flash("Invalid email or password!")
+
+            return redirect("/admin-login")
+
+    return render_template("admin-login.html")
 
 @app.route("/admin-panel")
 def admin_panel():
-    return render_template("admin-panel.html")
 
+    if "admin" not in session:
+        return redirect("/admin-login")
+
+    return render_template("admin-panel.html")
 
 @app.route("/upload", methods=["GET", "POST"])
 def upload():
 
+    auth = admin_required()
+    if auth:
+        return auth
+    
     conn = sqlite3.connect("database.db")
     cursor = conn.cursor()
 
@@ -130,6 +163,7 @@ def upload():
 
             conn.close()
 
+            flash("Material uploaded successfully!")
             return redirect("/admin-panel")
 
     cursor.execute("""
@@ -259,6 +293,10 @@ def materials_page(semester, subject, resource_type):
 
 @app.route("/admin-resources")
 def admin_resources():
+    auth = admin_required()
+    if auth:
+        return auth
+
     conn = sqlite3.connect("database.db")
     cursor = conn.cursor()
 
@@ -279,6 +317,9 @@ def admin_resources():
 
 @app.route("/delete-material/<int:id>")
 def delete_material(id):
+    auth = admin_required()
+    if auth:
+        return auth
     conn = sqlite3.connect("database.db")
     cursor = conn.cursor()
 
@@ -295,13 +336,14 @@ def delete_material(id):
         conn.commit()
 
     conn.close()
-
+    flash("Material deleted successfully!")
     return redirect("/admin-resources")
-
 
 @app.route("/manage-subjects", methods=["GET", "POST"])
 def manage_subjects():
-
+    auth = admin_required()
+    if auth:
+        return auth
     conn = sqlite3.connect("database.db")
     cursor = conn.cursor()
 
@@ -329,6 +371,7 @@ def manage_subjects():
         ))
 
         conn.commit()
+        flash("Subject added successfully!")
 
     cursor.execute("""
         SELECT * FROM subjects
@@ -353,18 +396,24 @@ def manage_subjects():
 
 @app.route("/delete-subject/<int:id>")
 def delete_subject(id):
+    auth = admin_required()
+    if auth:
+        return auth
     conn = sqlite3.connect("database.db")
     cursor = conn.cursor()
 
     cursor.execute("DELETE FROM subjects WHERE id = ?", (id,))
     conn.commit()
     conn.close()
-
+    flash("Subject deleted successfully!")
     return redirect("/manage-subjects")
 
 
 @app.route("/edit-subject/<int:id>", methods=["GET", "POST"])
 def edit_subject(id):
+    auth = admin_required()
+    if auth:
+        return auth
     conn = sqlite3.connect("database.db")
     cursor = conn.cursor()
 
@@ -385,7 +434,7 @@ def edit_subject(id):
 
         conn.commit()
         conn.close()
-
+        flash("Subject updated successfully!")
         return redirect("/manage-subjects")
 
     cursor.execute("SELECT * FROM subjects WHERE id = ?", (id,))
@@ -416,6 +465,9 @@ def get_subjects_api(semester):
 
 @app.route("/edit-material/<int:id>", methods=["GET", "POST"])
 def edit_material(id):
+    auth = admin_required()
+    if auth:
+        return auth
     conn = sqlite3.connect("database.db")
     cursor = conn.cursor()
 
@@ -445,7 +497,7 @@ def edit_material(id):
 
         conn.commit()
         conn.close()
-
+        flash("Material updated successfully!")
         return redirect("/admin-resources")
 
     cursor.execute("SELECT * FROM materials WHERE id = ?", (id,))
@@ -458,7 +510,9 @@ def edit_material(id):
 
 @app.route("/manage-semesters", methods=["GET", "POST"])
 def manage_semesters():
-
+    auth = admin_required()
+    if auth:
+        return auth
     conn = sqlite3.connect("database.db")
     cursor = conn.cursor()
 
@@ -472,6 +526,7 @@ def manage_semesters():
         """, (semester_name, is_active))
 
         conn.commit()
+        flash("Semester added successfully!")
 
     cursor.execute("""
         SELECT * FROM semesters
@@ -485,18 +540,24 @@ def manage_semesters():
 
 @app.route("/delete-semester/<int:id>")
 def delete_semester(id):
+    auth = admin_required()
+    if auth:
+        return auth
     conn = sqlite3.connect("database.db")
     cursor = conn.cursor()
 
     cursor.execute("DELETE FROM semesters WHERE id = ?", (id,))
     conn.commit()
     conn.close()
-
+    flash("Semester deleted successfully!")
     return redirect("/manage-semesters")
 
 
 @app.route("/edit-semester/<int:id>", methods=["GET", "POST"])
 def edit_semester(id):
+    auth = admin_required()
+    if auth:
+        return auth
     conn = sqlite3.connect("database.db")
     cursor = conn.cursor()
 
@@ -512,7 +573,7 @@ def edit_semester(id):
 
         conn.commit()
         conn.close()
-
+        flash("Semester updated successfully!")
         return redirect("/manage-semesters")
 
     cursor.execute("SELECT * FROM semesters WHERE id = ?", (id,))
@@ -536,6 +597,12 @@ def view_file(filename):
         filename,
         as_attachment=False
     )
+
+@app.route("/logout")
+def logout():
+    session.pop("admin", None)
+    flash("Logged out successfully!")
+    return redirect("/admin-login")
 
 if __name__ == "__main__":
     app.run(debug=True)
