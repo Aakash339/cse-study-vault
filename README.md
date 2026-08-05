@@ -84,3 +84,10 @@ cse-study-vault/
 - Cloud deployment
 
 ---
+
+
+##  Authentication
+
+This project includes separate **Admin** and **Student** login modules.
+
+Default credentials have been intentionally omitted for security reasons. Please configure your own credentials in the database before running the application.
